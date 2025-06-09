@@ -1,18 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // ✅ Add navigation
 import AuthCard from '../components/ui/AuthCard';
 import Button from '../components/ui/Button';
 import { useTheme } from '../context/ThemeContext';
-import apiClient from '../lib/api'; // ✅ New import
+import apiClient from '../lib/api';
 
 const OTPVerificationPage = () => {
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate(); // ✅ Add navigation hook
   const [isLoading, setIsLoading] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
-  // Store email in state — you can get this from localStorage or context
   const [id, setId] = useState(() => {
     return localStorage.getItem('id') || '';
   });
@@ -60,14 +61,13 @@ const OTPVerificationPage = () => {
         code,
       });
 
-      // Save token if returned
       const token = response.data.token;
       if (token) {
         localStorage.setItem('token', token);
       }
 
-      // Redirect user after successful verification
-      window.location.href = '/'; // Or use navigate('/')
+      // ✅ Navigate to dashboard after successful verification
+      navigate('/dashboard');
     } catch (error: any) {
       alert(
         error.response?.data?.message ||
@@ -142,7 +142,6 @@ const OTPVerificationPage = () => {
               type="button"
               className="text-secondary-dark dark:text-secondary-light hover:underline"
               onClick={() => {
-                // Optionally resend OTP
                 console.log('Resend clicked');
               }}
             >
