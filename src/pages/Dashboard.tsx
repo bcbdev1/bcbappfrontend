@@ -38,27 +38,9 @@ import { useTheme } from '../context/ThemeContext';
 
 const Dashboard = () => {
   const { theme, toggleTheme } = useTheme();
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Start closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check screen size and set mobile state
-  useEffect(() => {
-    const checkScreenSize = () => {
-      const mobile = window.innerWidth < 1024;
-      setIsMobile(mobile);
-      if (!mobile && window.innerWidth >= 1280) {
-        setSidebarOpen(true); // Auto-open on large screens
-      } else if (mobile) {
-        setSidebarOpen(false); // Auto-close on mobile
-      }
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -267,11 +249,15 @@ const Dashboard = () => {
   };
 
   const handleDownload = (document: any) => {
+    // Simulate document download
     console.log(`Downloading ${document.name}`);
+    // In a real app, this would trigger the actual download
   };
 
   const handlePreview = (document: any) => {
+    // Simulate document preview
     console.log(`Previewing ${document.name}`);
+    // In a real app, this would open a preview modal or new tab
   };
 
   return (
@@ -289,7 +275,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Glassmorphism Sidebar */}
+      {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -297,35 +283,25 @@ const Dashboard = () => {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className={`fixed left-0 top-0 h-full w-64 sm:w-70 z-50 ${
+            className={`fixed left-0 top-0 h-full w-70 z-50 ${
               theme === 'dark' 
-                ? 'bg-surface-dark/20 border-r border-white/10' 
-                : 'bg-white/20 border-r border-black/10'
-            } backdrop-blur-2xl backdrop-saturate-150 shadow-2xl`}
-            style={{
-              background: theme === 'dark' 
-                ? 'linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(51, 65, 85, 0.2) 100%)'
-                : 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(248, 250, 252, 0.2) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            }}
+                ? 'bg-surface-dark/95 border-r border-surface-secondary-dark/30 shadow-dark-elevated' 
+                : 'bg-surface-light/95 border-r border-gray-200'
+            } backdrop-blur-xl`}
           >
-            {/* Glassmorphism overlay for extra depth */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-            
             {/* Logo */}
-            <div className={`relative p-4 sm:p-6 border-b ${
-              theme === 'dark' ? 'border-white/10' : 'border-black/10'
+            <div className={`p-6 border-b ${
+              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
             }`}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center ${
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center ${
                     theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
                   }`}>
-                    <span className="text-white font-bold text-sm sm:text-lg">BC</span>
+                    <span className="text-white font-bold text-lg">BC</span>
                   </div>
-                  <div className="hidden sm:block">
-                    <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
+                  <div>
+                    <h1 className="text-xl font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
                       BCBUZZ
                     </h1>
                     <p className={`text-xs ${
@@ -338,20 +314,20 @@ const Dashboard = () => {
                   onClick={() => setSidebarOpen(false)}
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     theme === 'dark' 
-                      ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
-                      : 'hover:bg-black/10 text-text-secondary-light hover:text-text-light'
+                      ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                      : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <X className="w-5 h-5" />
                 </motion.button>
               </div>
             </div>
 
             {/* Navigation */}
-            <nav className="relative p-3 sm:p-4 flex-1">
-              <div className="space-y-1 sm:space-y-2">
+            <nav className="p-4 flex-1">
+              <div className="space-y-2">
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
@@ -359,22 +335,22 @@ const Dashboard = () => {
                     <motion.button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all duration-200 group ${
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                         isActive
                           ? theme === 'dark'
-                            ? 'bg-white/10 text-secondary-dark border border-white/20 shadow-lg backdrop-blur-sm'
-                            : 'bg-black/10 text-blue-600 border border-black/20 shadow-lg backdrop-blur-sm'
+                            ? 'bg-gradient-to-r from-secondary-dark/20 to-accent-dark/20 text-secondary-dark border border-secondary-dark/30 shadow-inner-glow'
+                            : 'bg-blue-50 text-blue-600 border border-blue-200 shadow-sm'
                           : theme === 'dark'
-                            ? 'hover:bg-white/5 text-text-secondary-dark hover:text-text-dark'
-                            : 'hover:bg-black/5 text-text-secondary-light hover:text-text-light'
+                            ? 'hover:bg-surface-secondary-dark/30 text-text-secondary-dark hover:text-text-dark'
+                            : 'hover:bg-gray-50 text-text-secondary-light hover:text-text-light'
                       }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <Icon className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 ${
+                      <Icon className={`w-5 h-5 transition-transform duration-200 ${
                         isActive ? 'scale-110' : 'group-hover:scale-105'
                       }`} />
-                      <span className="font-medium text-sm sm:text-base">{item.label}</span>
+                      <span className="font-medium">{item.label}</span>
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
@@ -391,22 +367,22 @@ const Dashboard = () => {
             </nav>
 
             {/* User Profile */}
-            <div className={`relative p-3 sm:p-4 border-t ${
-              theme === 'dark' ? 'border-white/10' : 'border-black/10'
+            <div className={`p-4 border-t ${
+              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
             }`}>
-              <div className={`flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-xl ${
+              <div className={`flex items-center space-x-3 p-3 rounded-xl ${
                 theme === 'dark' 
-                  ? 'bg-white/5 border border-white/10' 
-                  : 'bg-black/5 border border-black/10'
-              } backdrop-blur-sm`}>
-                <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
+                  ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-dark-card' 
+                  : 'bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-100'
+              }`}>
+                <div className={`w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
                   theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
                 }`}>
-                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <User className="w-5 h-5 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">Test User</p>
-                  <p className={`text-xs truncate ${
+                <div className="flex-1">
+                  <p className="font-medium text-sm">Test User</p>
+                  <p className={`text-xs ${
                     theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                   }`}>test@bcbuzz.com</p>
                 </div>
@@ -414,36 +390,39 @@ const Dashboard = () => {
               
               {/* Logout Button */}
               <motion.button
-                className={`w-full flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2.5 sm:py-3 mt-3 rounded-xl transition-all duration-200 ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 mt-3 rounded-xl transition-all duration-200 ${
                   theme === 'dark'
-                    ? 'hover:bg-red-500/10 text-error-dark hover:text-red-300 border border-transparent hover:border-red-500/20'
+                    ? 'hover:bg-error-dark/20 text-error-dark hover:text-red-300 border border-transparent hover:border-error-dark/30'
                     : 'hover:bg-red-50 text-red-600 hover:text-red-700 border border-transparent hover:border-red-200'
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-medium text-sm sm:text-base">Logout</span>
+                <LogOut className="w-5 h-5" />
+                <span className="font-medium">Logout</span>
               </motion.button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content - Responsive margins */}
+      {/* Main Content - Fixed the transition issue */}
       <div 
         className={`transition-all duration-300 ease-in-out ${
-          sidebarOpen && !isMobile ? 'lg:ml-70' : 'ml-0'
+          sidebarOpen ? 'ml-70' : 'ml-0'
         }`}
+        style={{
+          marginLeft: sidebarOpen ? '17.5rem' : '0',
+        }}
       >
-        {/* Header - Responsive */}
+        {/* Header */}
         <header className={`${
           theme === 'dark' 
             ? 'bg-surface-dark/80 border-b border-surface-secondary-dark/30 shadow-dark-card' 
             : 'bg-surface-light/80 border-b border-gray-200'
         } backdrop-blur-xl sticky top-0 z-40`}>
-          <div className="flex items-center justify-between p-3 sm:p-4 lg:p-6">
-            <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center justify-between p-6">
+            <div className="flex items-center space-x-4">
               {/* Sidebar Toggle Button */}
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -463,28 +442,28 @@ const Dashboard = () => {
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center space-x-2 sm:space-x-3"
+                  className="flex items-center space-x-3"
                 >
-                  <div className={`w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-lg flex items-center justify-center ${
+                  <div className={`w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-lg flex items-center justify-center ${
                     theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
                   }`}>
-                    <span className="text-white font-bold text-xs sm:text-sm">BC</span>
+                    <span className="text-white font-bold text-sm">BC</span>
                   </div>
-                  <h1 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
                     BCBUZZ
                   </h1>
                 </motion.div>
               )}
               
-              <div className="hidden sm:block">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold">Welcome back, Test</h1>
-                <p className={`text-xs sm:text-sm ${
+              <div>
+                <h1 className="text-2xl font-bold">Welcome back, Test</h1>
+                <p className={`text-sm ${
                   theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                 }`}>Here's an overview of your security audits and account</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center space-x-4">
               {/* Theme Toggle */}
               <motion.button
                 onClick={toggleTheme}
@@ -497,21 +476,21 @@ const Dashboard = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
+                  <Sun className="w-5 h-5 text-yellow-400" />
                 ) : (
-                  <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
+                  <Moon className="w-5 h-5 text-indigo-600" />
                 )}
               </motion.button>
 
-              {/* Search - Hidden on mobile */}
-              <div className="relative hidden sm:block">
+              {/* Search */}
+              <div className="relative">
                 <Search className={`w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 ${
                   theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                 }`} />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className={`pl-10 pr-4 py-2 rounded-lg border transition-all duration-200 w-32 lg:w-48 ${
+                  className={`pl-10 pr-4 py-2 rounded-lg border transition-all duration-200 ${
                     theme === 'dark'
                       ? 'bg-surface-secondary-dark/50 border-surface-secondary-dark text-text-dark placeholder:text-text-secondary-dark focus:border-secondary-dark shadow-dark-card'
                       : 'bg-gray-50 border-gray-200 text-text-light placeholder:text-text-secondary-light focus:border-blue-300'
@@ -529,8 +508,8 @@ const Dashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-error-dark rounded-full animate-pulse"></span>
+                <Bell className="w-5 h-5" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-error-dark rounded-full animate-pulse"></span>
               </motion.button>
 
               {/* User Profile Dropdown (when sidebar is closed) */}
@@ -538,7 +517,7 @@ const Dashboard = () => {
                 <div className="relative">
                   <motion.button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
                         ? 'hover:bg-surface-secondary-dark/50' 
                         : 'hover:bg-gray-100'
@@ -546,18 +525,18 @@ const Dashboard = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
+                    <div className={`w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
                       theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
                     }`}>
-                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                      <User className="w-4 h-4 text-white" />
                     </div>
-                    <div className="text-left hidden lg:block">
+                    <div className="text-left hidden md:block">
                       <p className="font-medium text-sm">Test User</p>
                       <p className={`text-xs ${
                         theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                       }`}>test@bcbuzz.com</p>
                     </div>
-                    <ChevronDown className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 hidden lg:block ${
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       userDropdownOpen ? 'rotate-180' : ''
                     }`} />
                   </motion.button>
@@ -570,25 +549,25 @@ const Dashboard = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className={`absolute right-0 top-full mt-2 w-48 sm:w-64 ${
+                        className={`absolute right-0 top-full mt-2 w-64 ${
                           theme === 'dark'
                             ? 'bg-surface-dark/95 border border-surface-secondary-dark/30 shadow-dark-elevated'
                             : 'bg-surface-light border border-gray-200'
                         } rounded-xl backdrop-blur-xl z-50`}
                       >
                         {/* User Info */}
-                        <div className={`p-3 sm:p-4 border-b ${
+                        <div className={`p-4 border-b ${
                           theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
                         }`}>
-                          <div className="flex items-center space-x-2 sm:space-x-3">
-                            <div className={`w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-12 h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
                               theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
                             }`}>
-                              <User className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                              <User className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                              <p className="font-medium text-sm">Test User</p>
-                              <p className={`text-xs sm:text-sm ${
+                              <p className="font-medium">Test User</p>
+                              <p className={`text-sm ${
                                 theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                               }`}>test@bcbuzz.com</p>
                               <p className={`text-xs ${
@@ -600,21 +579,21 @@ const Dashboard = () => {
 
                         {/* Menu Items */}
                         <div className="p-2">
-                          <button className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 text-left ${
+                          <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
                               ? 'hover:bg-surface-secondary-dark/50' 
                               : 'hover:bg-gray-50'
                           }`}>
-                            <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span className="text-xs sm:text-sm">Account Settings</span>
+                            <Settings className="w-4 h-4" />
+                            <span className="text-sm">Account Settings</span>
                           </button>
-                          <button className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 text-left ${
+                          <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
                               ? 'hover:bg-surface-secondary-dark/50' 
                               : 'hover:bg-gray-50'
                           }`}>
-                            <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span className="text-xs sm:text-sm">Help & Support</span>
+                            <HelpCircle className="w-4 h-4" />
+                            <span className="text-sm">Help & Support</span>
                           </button>
                         </div>
 
@@ -622,13 +601,13 @@ const Dashboard = () => {
                         <div className={`p-2 border-t ${
                           theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
                         }`}>
-                          <button className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 text-left ${
+                          <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark'
                               ? 'hover:bg-error-dark/20 text-error-dark'
                               : 'hover:bg-red-50 text-red-600'
                           }`}>
-                            <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span className="text-xs sm:text-sm">Logout</span>
+                            <LogOut className="w-4 h-4" />
+                            <span className="text-sm">Logout</span>
                           </button>
                         </div>
                       </motion.div>
@@ -640,18 +619,10 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Content - Responsive */}
-        <main className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
-          {/* Mobile Welcome Message */}
-          <div className="block sm:hidden">
-            <h1 className="text-xl font-bold">Welcome back, Test</h1>
-            <p className={`text-sm ${
-              theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-            }`}>Security overview</p>
-          </div>
-
-          {/* Stats Grid - Responsive */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        {/* Dashboard Content */}
+        <main className="p-6 space-y-6">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -660,7 +631,7 @@ const Dashboard = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 hover:shadow-lg group cursor-pointer ${
+                  className={`p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg group cursor-pointer ${
                     theme === 'dark'
                       ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
                       : 'bg-surface-light border-gray-200 hover:border-blue-200 hover:shadow-blue-100/50'
@@ -668,22 +639,22 @@ const Dashboard = () => {
                   whileHover={{ scale: 1.02, y: -2 }}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-xs sm:text-sm mb-1 ${
+                    <div>
+                      <p className={`text-sm mb-1 ${
                         theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                       }`}>{stat.label}</p>
-                      <p className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 truncate">{stat.value}</p>
-                      <div className="flex items-center space-x-1 sm:space-x-2">
-                        <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
+                      <p className="text-2xl font-bold mb-1">{stat.value}</p>
+                      <div className="flex items-center space-x-2">
+                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
                           {stat.trend}
                         </span>
                       </div>
                     </div>
-                    <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all duration-300 group-hover:scale-110 ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
-                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                    <div className={`p-3 rounded-xl transition-all duration-300 group-hover:scale-110 ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
+                      <Icon className="w-6 h-6" />
                     </div>
                   </div>
-                  <p className={`text-xs mt-2 sm:mt-3 ${
+                  <p className={`text-xs mt-3 ${
                     theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                   }`}>{stat.description}</p>
                 </motion.div>
@@ -691,71 +662,71 @@ const Dashboard = () => {
             })}
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-            {/* Recent Audits - Responsive */}
-            <div className="xl:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Recent Audits */}
+            <div className="lg:col-span-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border ${
+                className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h3 className="text-lg sm:text-xl font-semibold">Your Audits</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold">Your Audits</h3>
                   <div className="flex items-center space-x-2">
                     <button className={`p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
                         ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                         : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                     }`}>
-                      <Filter className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <Filter className="w-4 h-4" />
                     </button>
-                    <button className="text-secondary-dark hover:underline text-xs sm:text-sm font-medium">View All →</button>
+                    <button className="text-secondary-dark hover:underline text-sm font-medium">View All →</button>
                   </div>
                 </div>
 
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-4">
                   {recentAudits.map((audit) => (
                     <motion.div
                       key={audit.id}
-                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border transition-all duration-300 cursor-pointer group ${
+                      className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer group ${
                         theme === 'dark'
                           ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card'
                           : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
                       }`}
                       whileHover={{ scale: 1.01 }}
                     >
-                      <div className="flex items-center justify-between mb-2 sm:mb-3">
-                        <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
-                          <div className={`p-1.5 sm:p-2 rounded-lg ${
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-lg ${
                             audit.type === 'network' ? getColorClasses('info', 'bg') + ' ' + getColorClasses('info', 'text') :
                             audit.type === 'web' ? getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text') :
                             getColorClasses('secondary', 'bg') + ' ' + getColorClasses('secondary', 'text')
                           }`}>
-                            {audit.type === 'network' ? <Shield className="w-3 h-3 sm:w-4 sm:h-4" /> :
-                             audit.type === 'web' ? <Globe className="w-3 h-3 sm:w-4 sm:h-4" /> :
-                             <Shield className="w-3 h-3 sm:w-4 sm:h-4" />}
+                            {audit.type === 'network' ? <Shield className="w-4 h-4" /> :
+                             audit.type === 'web' ? <Globe className="w-4 h-4" /> :
+                             <Shield className="w-4 h-4" />}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm sm:text-base truncate">{audit.name}</h4>
-                            <p className={`text-xs sm:text-sm ${
+                          <div>
+                            <h4 className="font-medium">{audit.name}</h4>
+                            <p className={`text-sm ${
                               theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                             }`}>{audit.date}</p>
                           </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             audit.status === 'Completed' ? getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text') :
                             audit.status === 'In Progress' ? getColorClasses('info', 'bg') + ' ' + getColorClasses('info', 'text') :
                             getColorClasses('warning', 'bg') + ' ' + getColorClasses('warning', 'text')
                           }`}>
                             {audit.status}
                           </span>
-                          <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium ${
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
                             audit.priority === 'high' ? getColorClasses('error', 'bg') + ' ' + getColorClasses('error', 'text') :
                             audit.priority === 'medium' ? getColorClasses('warning', 'bg') + ' ' + getColorClasses('warning', 'text') :
                             getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text')
@@ -766,11 +737,11 @@ const Dashboard = () => {
                       </div>
                       
                       {audit.progress > 0 && audit.progress < 100 && (
-                        <div className={`w-full rounded-full h-1.5 sm:h-2 ${
+                        <div className={`w-full rounded-full h-2 ${
                           theme === 'dark' ? 'bg-surface-secondary-dark' : 'bg-gray-200'
                         }`}>
                           <div
-                            className="bg-gradient-to-r from-secondary-dark to-accent-dark h-1.5 sm:h-2 rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-secondary-dark to-accent-dark h-2 rounded-full transition-all duration-500"
                             style={{ width: `${audit.progress}%` }}
                           ></div>
                         </div>
@@ -780,7 +751,7 @@ const Dashboard = () => {
                 </div>
 
                 <motion.button
-                  className={`w-full mt-3 sm:mt-4 p-2.5 sm:p-3 border-2 border-dashed rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 group ${
+                  className={`w-full mt-4 p-3 border-2 border-dashed rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 group ${
                     theme === 'dark'
                       ? 'border-secondary-dark/30 text-secondary-dark hover:bg-secondary-dark/10 hover:border-secondary-dark/50'
                       : 'border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400'
@@ -788,35 +759,35 @@ const Dashboard = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:rotate-90" />
-                  <span className="font-medium text-sm sm:text-base">Request New Audit</span>
+                  <Plus className="w-5 h-5 transition-transform duration-200 group-hover:rotate-90" />
+                  <span className="font-medium">Request New Audit</span>
                 </motion.button>
               </motion.div>
             </div>
 
-            {/* Right Sidebar - Responsive */}
-            <div className="space-y-4 sm:space-y-6">
-              {/* Document Downloads - Responsive */}
+            {/* Right Sidebar */}
+            <div className="space-y-6">
+              {/* Document Downloads */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border ${
+                className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <h3 className="text-base sm:text-lg font-semibold">Documents</h3>
-                  <button className="text-secondary-dark hover:underline text-xs sm:text-sm font-medium">View All →</button>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Documents</h3>
+                  <button className="text-secondary-dark hover:underline text-sm font-medium">View All →</button>
                 </div>
                 
-                <div className="space-y-2 sm:space-y-3">
-                  {documents.slice(0, 3).map((doc) => (
+                <div className="space-y-3">
+                  {documents.map((doc) => (
                     <motion.div
                       key={doc.id}
-                      className={`p-2.5 sm:p-3 rounded-lg border transition-all duration-200 group ${
+                      className={`p-3 rounded-lg border transition-all duration-200 group ${
                         theme === 'dark'
                           ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 shadow-dark-card'
                           : 'border-gray-200 hover:bg-gray-50'
@@ -824,13 +795,13 @@ const Dashboard = () => {
                       whileHover={{ scale: 1.01 }}
                     >
                       <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-2 sm:space-x-3 flex-1 min-w-0">
-                          <div className={`p-1.5 sm:p-2 rounded-lg ${getColorClasses('info', 'bg')} ${getColorClasses('info', 'text')}`}>
-                            <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className={`p-2 rounded-lg ${getColorClasses('info', 'bg')} ${getColorClasses('info', 'text')}`}>
+                            <FileText className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-xs sm:text-sm truncate">{doc.name}</h4>
-                            <div className="flex items-center space-x-1 sm:space-x-2 mt-1">
+                            <h4 className="font-medium text-sm truncate">{doc.name}</h4>
+                            <div className="flex items-center space-x-2 mt-1">
                               <span className={`text-xs ${
                                 theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                               }`}>{doc.size}</span>
@@ -842,12 +813,12 @@ const Dashboard = () => {
                               }`}>{doc.type}</span>
                             </div>
                             <div className="flex items-center space-x-1 mt-1">
-                              <Calendar className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
+                              <Calendar className={`w-3 h-3 ${
                                 theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                               }`} />
                               <span className={`text-xs ${
                                 theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-                              }`}>{doc.uploadDate}</span>
+                              }`}>{doc.uploadDate} at {doc.uploadTime}</span>
                             </div>
                           </div>
                         </div>
@@ -855,7 +826,7 @@ const Dashboard = () => {
                         <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           <motion.button
                             onClick={() => handlePreview(doc)}
-                            className={`p-1 sm:p-1.5 rounded transition-colors ${
+                            className={`p-1.5 rounded transition-colors ${
                               theme === 'dark' 
                                 ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                                 : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
@@ -864,11 +835,11 @@ const Dashboard = () => {
                             whileTap={{ scale: 0.9 }}
                             title="Preview"
                           >
-                            <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                            <Eye className="w-3 h-3" />
                           </motion.button>
                           <motion.button
                             onClick={() => handleDownload(doc)}
-                            className={`p-1 sm:p-1.5 rounded transition-colors ${
+                            className={`p-1.5 rounded transition-colors ${
                               theme === 'dark' 
                                 ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                                 : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
@@ -877,7 +848,19 @@ const Dashboard = () => {
                             whileTap={{ scale: 0.9 }}
                             title="Download"
                           >
-                            <Download className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                            <Download className="w-3 h-3" />
+                          </motion.button>
+                          <motion.button
+                            className={`p-1.5 rounded transition-colors ${
+                              theme === 'dark' 
+                                ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
+                                : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            title="More options"
+                          >
+                            <MoreVertical className="w-3 h-3" />
                           </motion.button>
                         </div>
                       </div>
@@ -897,37 +880,37 @@ const Dashboard = () => {
                 </div>
               </motion.div>
 
-              {/* Enhanced Notifications - Responsive */}
+              {/* Enhanced Notifications */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border ${
+                className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                    <h3 className="text-base sm:text-lg font-semibold">Notifications</h3>
+                    <h3 className="text-lg font-semibold">Notifications</h3>
                     <div className="flex items-center space-x-1">
-                      <BellRing className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-dark" />
-                      <span className="text-xs bg-error-dark text-white px-1.5 sm:px-2 py-0.5 rounded-full">
+                      <BellRing className="w-4 h-4 text-secondary-dark" />
+                      <span className="text-xs bg-error-dark text-white px-2 py-0.5 rounded-full">
                         {notifications.filter(n => n.unread).length}
                       </span>
                     </div>
                   </div>
-                  <button className="text-secondary-dark hover:underline text-xs sm:text-sm font-medium">See All →</button>
+                  <button className="text-secondary-dark hover:underline text-sm font-medium">See All →</button>
                 </div>
                 
-                <div className="space-y-2 sm:space-y-3 max-h-60 sm:max-h-80 overflow-y-auto">
-                  {notifications.slice(0, 3).map((notification) => {
+                <div className="space-y-3 max-h-80 overflow-y-auto">
+                  {notifications.map((notification) => {
                     const Icon = notification.icon;
                     return (
                       <motion.div 
                         key={notification.id} 
-                        className={`relative p-2.5 sm:p-4 rounded-lg sm:rounded-xl transition-all duration-200 cursor-pointer group ${
+                        className={`relative p-4 rounded-xl transition-all duration-200 cursor-pointer group ${
                           notification.unread 
                             ? theme === 'dark' 
                               ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-inner-glow' 
@@ -941,23 +924,23 @@ const Dashboard = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: notification.id * 0.1 }}
                       >
-                        <div className="flex items-start space-x-2 sm:space-x-3">
-                          <div className={`p-1.5 sm:p-2 rounded-lg mt-0.5 ${
+                        <div className="flex items-start space-x-3">
+                          <div className={`p-2 rounded-lg mt-0.5 ${
                             notification.type === 'success' ? getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text') :
                             notification.type === 'warning' ? getColorClasses('warning', 'bg') + ' ' + getColorClasses('warning', 'text') :
                             getColorClasses('info', 'bg') + ' ' + getColorClasses('info', 'text')
                           }`}>
-                            <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <Icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between">
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-xs sm:text-sm mb-1 truncate">{notification.title}</h4>
+                              <div className="flex-1">
+                                <h4 className="font-medium text-sm mb-1">{notification.title}</h4>
                                 <p className={`text-xs leading-relaxed ${
                                   theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                                 }`}>{notification.description}</p>
-                                <div className="flex items-center space-x-1 sm:space-x-2 mt-1 sm:mt-2">
-                                  <Clock className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
+                                <div className="flex items-center space-x-2 mt-2">
+                                  <Clock className={`w-3 h-3 ${
                                     theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                                   }`} />
                                   <span className={`text-xs ${
@@ -967,7 +950,7 @@ const Dashboard = () => {
                               </div>
                               {notification.unread && (
                                 <motion.div 
-                                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary-dark rounded-full ml-2 mt-1"
+                                  className="w-2 h-2 bg-secondary-dark rounded-full ml-2 mt-1"
                                   animate={{ scale: [1, 1.2, 1] }}
                                   transition={{ duration: 2, repeat: Infinity }}
                                 />
@@ -977,13 +960,13 @@ const Dashboard = () => {
                         </div>
                         
                         {/* Hover actions */}
-                        <div className="absolute top-1 sm:top-2 right-1 sm:right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           <button className={`p-1 rounded transition-colors ${
                             theme === 'dark' 
                               ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                               : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                           }`}>
-                            <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       </motion.div>
@@ -993,7 +976,7 @@ const Dashboard = () => {
                 
                 {/* Mark all as read button */}
                 <motion.button
-                  className={`w-full mt-3 sm:mt-4 p-2 text-xs sm:text-sm rounded-lg transition-all duration-200 ${
+                  className={`w-full mt-4 p-2 text-sm rounded-lg transition-all duration-200 ${
                     theme === 'dark'
                       ? 'text-secondary-dark hover:bg-secondary-dark/10'
                       : 'text-blue-600 hover:bg-blue-50'
@@ -1005,25 +988,25 @@ const Dashboard = () => {
                 </motion.button>
               </motion.div>
 
-              {/* Quick Actions - Responsive */}
+              {/* Quick Actions */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border ${
+                className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
-                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Actions</h3>
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+                <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action) => {
                     const Icon = action.icon;
                     return (
                       <motion.button
                         key={action.label}
-                        className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border transition-all duration-300 flex flex-col items-center space-y-1 sm:space-y-2 group ${
+                        className={`p-4 rounded-xl border transition-all duration-300 flex flex-col items-center space-y-2 group ${
                           theme === 'dark'
                             ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
                             : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
@@ -1031,12 +1014,12 @@ const Dashboard = () => {
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <div className={`p-1.5 sm:p-2 rounded-lg transition-all duration-300 group-hover:scale-110 ${getColorClasses(action.color, 'bg')} ${getColorClasses(action.color, 'text')}`}>
-                          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <div className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-110 ${getColorClasses(action.color, 'bg')} ${getColorClasses(action.color, 'text')}`}>
+                          <Icon className="w-5 h-5" />
                         </div>
                         <div className="text-center">
                           <span className="text-xs font-medium block">{action.label}</span>
-                          <span className={`text-xs hidden sm:block ${
+                          <span className={`text-xs ${
                             theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                           }`}>{action.description}</span>
                         </div>
@@ -1051,12 +1034,12 @@ const Dashboard = () => {
       </div>
 
       {/* Mobile Overlay */}
-      {sidebarOpen && isMobile && (
+      {sidebarOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
