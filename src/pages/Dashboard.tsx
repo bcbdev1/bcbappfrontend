@@ -29,10 +29,7 @@ import {
   Moon,
   Filter,
   Eye,
-  MoreVertical,
-  BellRing,
-  Info,
-  AlertCircle
+  MoreVertical
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -130,39 +127,24 @@ const Dashboard = () => {
   const notifications = [
     {
       id: 1,
-      title: 'Network Audit Report Updated',
-      description: 'Your network security audit report has been updated with new findings',
+      title: 'Your Network Audit report has been updated',
       time: '2 hours ago',
       type: 'info',
-      unread: true,
-      icon: Info
+      unread: true
     },
     {
       id: 2,
-      title: 'Critical Vulnerability Detected',
-      description: 'High-severity vulnerability found in web application requiring immediate attention',
+      title: 'Security vulnerability detected in web application',
       time: '1 day ago',
       type: 'warning',
-      unread: true,
-      icon: AlertTriangle
+      unread: true
     },
     {
       id: 3,
-      title: 'Cloud Audit Completed',
-      description: 'Your cloud infrastructure audit has been completed successfully with no critical issues',
+      title: 'Cloud Audit completed successfully',
       time: '3 days ago',
       type: 'success',
-      unread: false,
-      icon: CheckCircle
-    },
-    {
-      id: 4,
-      title: 'Security Certificate Expiring',
-      description: 'Your SSL certificate will expire in 30 days. Renewal recommended',
-      time: '5 days ago',
-      type: 'warning',
-      unread: false,
-      icon: AlertCircle
+      unread: false
     }
   ];
 
@@ -266,15 +248,6 @@ const Dashboard = () => {
         ? 'bg-background-dark text-text-dark' 
         : 'bg-background-light text-text-light'
     }`}>
-      {/* Dark Mode Background Effects */}
-      {theme === 'dark' && (
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-transparent rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse-slow" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-dark-mesh opacity-50" />
-        </div>
-      )}
-
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -285,19 +258,17 @@ const Dashboard = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className={`fixed left-0 top-0 h-full w-70 z-50 ${
               theme === 'dark' 
-                ? 'bg-surface-dark/95 border-r border-surface-secondary-dark/30 shadow-dark-elevated' 
+                ? 'bg-surface-dark/95 border-r border-surface-secondary-dark/50' 
                 : 'bg-surface-light/95 border-r border-gray-200'
-            } backdrop-blur-xl`}
+            } backdrop-blur-xl shadow-2xl`}
           >
             {/* Logo */}
             <div className={`p-6 border-b ${
-              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
+              theme === 'dark' ? 'border-surface-secondary-dark/50' : 'border-gray-200'
             }`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center ${
-                    theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
-                  }`}>
+                  <div className="w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center shadow-glow">
                     <span className="text-white font-bold text-lg">BC</span>
                   </div>
                   <div>
@@ -314,7 +285,7 @@ const Dashboard = () => {
                   onClick={() => setSidebarOpen(false)}
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     theme === 'dark' 
-                      ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                      ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                       : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                   }`}
                   whileHover={{ scale: 1.05 }}
@@ -338,10 +309,10 @@ const Dashboard = () => {
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                         isActive
                           ? theme === 'dark'
-                            ? 'bg-gradient-to-r from-secondary-dark/20 to-accent-dark/20 text-secondary-dark border border-secondary-dark/30 shadow-inner-glow'
+                            ? 'bg-secondary-dark/20 text-secondary-dark border border-secondary-dark/30 shadow-inner-glow'
                             : 'bg-blue-50 text-blue-600 border border-blue-200 shadow-sm'
                           : theme === 'dark'
-                            ? 'hover:bg-surface-secondary-dark/30 text-text-secondary-dark hover:text-text-dark'
+                            ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark'
                             : 'hover:bg-gray-50 text-text-secondary-light hover:text-text-light'
                       }`}
                       whileHover={{ scale: 1.02 }}
@@ -368,16 +339,14 @@ const Dashboard = () => {
 
             {/* User Profile */}
             <div className={`p-4 border-t ${
-              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
+              theme === 'dark' ? 'border-surface-secondary-dark/50' : 'border-gray-200'
             }`}>
               <div className={`flex items-center space-x-3 p-3 rounded-xl ${
                 theme === 'dark' 
-                  ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-dark-card' 
+                  ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20' 
                   : 'bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-100'
               }`}>
-                <div className={`w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
-                  theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
-                }`}>
+                <div className="w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center shadow-glow">
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1">
@@ -406,21 +375,14 @@ const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content - Fixed the transition issue */}
-      <div 
-        className={`transition-all duration-300 ease-in-out ${
-          sidebarOpen ? 'ml-70' : 'ml-0'
-        }`}
-        style={{
-          marginLeft: sidebarOpen ? '17.5rem' : '0',
-        }}
-      >
+      {/* Main Content */}
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'ml-70' : 'ml-0'}`}>
         {/* Header */}
         <header className={`${
           theme === 'dark' 
-            ? 'bg-surface-dark/80 border-b border-surface-secondary-dark/30 shadow-dark-card' 
+            ? 'bg-surface-dark/80 border-b border-surface-secondary-dark/50' 
             : 'bg-surface-light/80 border-b border-gray-200'
-        } backdrop-blur-xl sticky top-0 z-40`}>
+        } backdrop-blur-xl sticky top-0 z-40 shadow-sm`}>
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center space-x-4">
               {/* Sidebar Toggle Button */}
@@ -428,7 +390,7 @@ const Dashboard = () => {
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                 }`}
                 whileHover={{ scale: 1.05 }}
@@ -444,9 +406,7 @@ const Dashboard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   className="flex items-center space-x-3"
                 >
-                  <div className={`w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-lg flex items-center justify-center ${
-                    theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
-                  }`}>
+                  <div className="w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-lg flex items-center justify-center shadow-glow">
                     <span className="text-white font-bold text-sm">BC</span>
                   </div>
                   <h1 className="text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
@@ -469,7 +429,7 @@ const Dashboard = () => {
                 onClick={toggleTheme}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                 }`}
                 whileHover={{ scale: 1.05 }}
@@ -492,7 +452,7 @@ const Dashboard = () => {
                   placeholder="Search..."
                   className={`pl-10 pr-4 py-2 rounded-lg border transition-all duration-200 ${
                     theme === 'dark'
-                      ? 'bg-surface-secondary-dark/50 border-surface-secondary-dark text-text-dark placeholder:text-text-secondary-dark focus:border-secondary-dark shadow-dark-card'
+                      ? 'bg-surface-secondary-dark/50 border-surface-secondary-dark text-text-dark placeholder:text-text-secondary-dark focus:border-secondary-dark'
                       : 'bg-gray-50 border-gray-200 text-text-light placeholder:text-text-secondary-light focus:border-blue-300'
                   } focus:outline-none focus:ring-2 focus:ring-secondary-dark/20`}
                 />
@@ -502,7 +462,7 @@ const Dashboard = () => {
               <motion.button
                 className={`relative p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                 }`}
                 whileHover={{ scale: 1.05 }}
@@ -519,15 +479,13 @@ const Dashboard = () => {
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                     className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
-                        ? 'hover:bg-surface-secondary-dark/50' 
+                        ? 'hover:bg-surface-secondary-dark' 
                         : 'hover:bg-gray-100'
                     }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className={`w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
-                      theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
-                    }`}>
+                    <div className="w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center shadow-glow">
                       <User className="w-4 h-4 text-white" />
                     </div>
                     <div className="text-left hidden md:block">
@@ -551,18 +509,16 @@ const Dashboard = () => {
                         transition={{ duration: 0.2 }}
                         className={`absolute right-0 top-full mt-2 w-64 ${
                           theme === 'dark'
-                            ? 'bg-surface-dark/95 border border-surface-secondary-dark/30 shadow-dark-elevated'
+                            ? 'bg-surface-dark border border-surface-secondary-dark/50'
                             : 'bg-surface-light border border-gray-200'
-                        } rounded-xl backdrop-blur-xl z-50`}
+                        } rounded-xl shadow-2xl z-50 backdrop-blur-xl`}
                       >
                         {/* User Info */}
                         <div className={`p-4 border-b ${
-                          theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
+                          theme === 'dark' ? 'border-surface-secondary-dark/50' : 'border-gray-200'
                         }`}>
                           <div className="flex items-center space-x-3">
-                            <div className={`w-12 h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
-                              theme === 'dark' ? 'shadow-glow' : 'shadow-lg'
-                            }`}>
+                            <div className="w-12 h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center shadow-glow">
                               <User className="w-6 h-6 text-white" />
                             </div>
                             <div>
@@ -581,7 +537,7 @@ const Dashboard = () => {
                         <div className="p-2">
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
-                              ? 'hover:bg-surface-secondary-dark/50' 
+                              ? 'hover:bg-surface-secondary-dark' 
                               : 'hover:bg-gray-50'
                           }`}>
                             <Settings className="w-4 h-4" />
@@ -589,7 +545,7 @@ const Dashboard = () => {
                           </button>
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
-                              ? 'hover:bg-surface-secondary-dark/50' 
+                              ? 'hover:bg-surface-secondary-dark' 
                               : 'hover:bg-gray-50'
                           }`}>
                             <HelpCircle className="w-4 h-4" />
@@ -599,7 +555,7 @@ const Dashboard = () => {
 
                         {/* Logout */}
                         <div className={`p-2 border-t ${
-                          theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
+                          theme === 'dark' ? 'border-surface-secondary-dark/50' : 'border-gray-200'
                         }`}>
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark'
@@ -633,7 +589,7 @@ const Dashboard = () => {
                   transition={{ delay: index * 0.1 }}
                   className={`p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg group cursor-pointer ${
                     theme === 'dark'
-                      ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
+                      ? 'bg-surface-dark/50 border-surface-secondary-dark/50 hover:border-secondary-dark/50'
                       : 'bg-surface-light border-gray-200 hover:border-blue-200 hover:shadow-blue-100/50'
                   }`}
                   whileHover={{ scale: 1.02, y: -2 }}
@@ -671,7 +627,7 @@ const Dashboard = () => {
                 transition={{ delay: 0.4 }}
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
-                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    ? 'bg-surface-dark/50 border-surface-secondary-dark/50'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
@@ -680,7 +636,7 @@ const Dashboard = () => {
                   <div className="flex items-center space-x-2">
                     <button className={`p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
-                        ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
+                        ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                         : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                     }`}>
                       <Filter className="w-4 h-4" />
@@ -695,7 +651,7 @@ const Dashboard = () => {
                       key={audit.id}
                       className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer group ${
                         theme === 'dark'
-                          ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card'
+                          ? 'border-surface-secondary-dark/50 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50'
                           : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
                       }`}
                       whileHover={{ scale: 1.01 }}
@@ -774,7 +730,7 @@ const Dashboard = () => {
                 transition={{ delay: 0.5 }}
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
-                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    ? 'bg-surface-dark/50 border-surface-secondary-dark/50'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
@@ -789,7 +745,7 @@ const Dashboard = () => {
                       key={doc.id}
                       className={`p-3 rounded-lg border transition-all duration-200 group ${
                         theme === 'dark'
-                          ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 shadow-dark-card'
+                          ? 'border-surface-secondary-dark/50 hover:bg-surface-secondary-dark/30'
                           : 'border-gray-200 hover:bg-gray-50'
                       }`}
                       whileHover={{ scale: 1.01 }}
@@ -880,112 +836,57 @@ const Dashboard = () => {
                 </div>
               </motion.div>
 
-              {/* Enhanced Notifications */}
+              {/* Notifications */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
-                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    ? 'bg-surface-dark/50 border-surface-secondary-dark/50'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-lg font-semibold">Notifications</h3>
-                    <div className="flex items-center space-x-1">
-                      <BellRing className="w-4 h-4 text-secondary-dark" />
-                      <span className="text-xs bg-error-dark text-white px-2 py-0.5 rounded-full">
-                        {notifications.filter(n => n.unread).length}
-                      </span>
-                    </div>
-                  </div>
+                  <h3 className="text-lg font-semibold">Notifications</h3>
                   <button className="text-secondary-dark hover:underline text-sm font-medium">See All →</button>
                 </div>
-                
-                <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {notifications.map((notification) => {
-                    const Icon = notification.icon;
-                    return (
-                      <motion.div 
-                        key={notification.id} 
-                        className={`relative p-4 rounded-xl transition-all duration-200 cursor-pointer group ${
-                          notification.unread 
-                            ? theme === 'dark' 
-                              ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-inner-glow' 
-                              : 'bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200'
-                            : theme === 'dark'
-                              ? 'hover:bg-surface-secondary-dark/30'
-                              : 'hover:bg-gray-50'
-                        }`}
-                        whileHover={{ scale: 1.01, x: 2 }}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: notification.id * 0.1 }}
-                      >
-                        <div className="flex items-start space-x-3">
-                          <div className={`p-2 rounded-lg mt-0.5 ${
-                            notification.type === 'success' ? getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text') :
-                            notification.type === 'warning' ? getColorClasses('warning', 'bg') + ' ' + getColorClasses('warning', 'text') :
-                            getColorClasses('info', 'bg') + ' ' + getColorClasses('info', 'text')
-                          }`}>
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <h4 className="font-medium text-sm mb-1">{notification.title}</h4>
-                                <p className={`text-xs leading-relaxed ${
-                                  theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-                                }`}>{notification.description}</p>
-                                <div className="flex items-center space-x-2 mt-2">
-                                  <Clock className={`w-3 h-3 ${
-                                    theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-                                  }`} />
-                                  <span className={`text-xs ${
-                                    theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-                                  }`}>{notification.time}</span>
-                                </div>
-                              </div>
-                              {notification.unread && (
-                                <motion.div 
-                                  className="w-2 h-2 bg-secondary-dark rounded-full ml-2 mt-1"
-                                  animate={{ scale: [1, 1.2, 1] }}
-                                  transition={{ duration: 2, repeat: Infinity }}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Hover actions */}
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                          <button className={`p-1 rounded transition-colors ${
-                            theme === 'dark' 
-                              ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
-                              : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
-                          }`}>
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                <div className="space-y-3">
+                  {notifications.map((notification) => (
+                    <motion.div 
+                      key={notification.id} 
+                      className={`flex items-start space-x-3 p-3 rounded-lg transition-all duration-200 ${
+                        notification.unread 
+                          ? theme === 'dark' 
+                            ? 'bg-surface-secondary-dark/30 border border-secondary-dark/20' 
+                            : 'bg-blue-50 border border-blue-100'
+                          : ''
+                      }`}
+                      whileHover={{ scale: 1.01 }}
+                    >
+                      <div className={`p-1 rounded-full mt-1 ${
+                        notification.type === 'success' ? getColorClasses('success', 'bg') :
+                        notification.type === 'warning' ? getColorClasses('warning', 'bg') :
+                        getColorClasses('info', 'bg')
+                      }`}>
+                        <div className={`w-2 h-2 rounded-full ${
+                          notification.type === 'success' ? getColorClasses('success', 'text') :
+                          notification.type === 'warning' ? getColorClasses('warning', 'text') :
+                          getColorClasses('info', 'text')
+                        }`}></div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{notification.title}</p>
+                        <p className={`text-xs ${
+                          theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
+                        }`}>{notification.time}</p>
+                      </div>
+                      {notification.unread && (
+                        <div className="w-2 h-2 bg-secondary-dark rounded-full"></div>
+                      )}
+                    </motion.div>
+                  ))}
                 </div>
-                
-                {/* Mark all as read button */}
-                <motion.button
-                  className={`w-full mt-4 p-2 text-sm rounded-lg transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'text-secondary-dark hover:bg-secondary-dark/10'
-                      : 'text-blue-600 hover:bg-blue-50'
-                  }`}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  Mark all as read
-                </motion.button>
               </motion.div>
 
               {/* Quick Actions */}
@@ -995,7 +896,7 @@ const Dashboard = () => {
                 transition={{ delay: 0.7 }}
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
-                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    ? 'bg-surface-dark/50 border-surface-secondary-dark/50'
                     : 'bg-surface-light border-gray-200'
                 }`}
               >
@@ -1008,7 +909,7 @@ const Dashboard = () => {
                         key={action.label}
                         className={`p-4 rounded-xl border transition-all duration-300 flex flex-col items-center space-y-2 group ${
                           theme === 'dark'
-                            ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
+                            ? 'border-surface-secondary-dark/50 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50'
                             : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
                         }`}
                         whileHover={{ scale: 1.05, y: -2 }}

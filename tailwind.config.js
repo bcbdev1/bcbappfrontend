@@ -49,7 +49,6 @@ export default {
         'slide-out': 'slideOut 0.3s ease-in',
         'fade-in': 'fadeIn 0.2s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
-        'gradient-shift': 'gradientShift 8s ease-in-out infinite',
       },
       keyframes: {
         float: {
@@ -80,10 +79,6 @@ export default {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
-        gradientShift: {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-        },
       },
       spacing: {
         '18': '4.5rem',
@@ -100,13 +95,6 @@ export default {
         'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
         'glow-lg': '0 0 40px rgba(59, 130, 246, 0.4)',
         'inner-glow': 'inset 0 0 20px rgba(59, 130, 246, 0.1)',
-        'dark-glow': '0 0 30px rgba(219, 39, 119, 0.3), 0 0 60px rgba(59, 130, 246, 0.2)',
-        'dark-card': '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-        'dark-elevated': '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08)',
-      },
-      backgroundImage: {
-        'dark-gradient': 'linear-gradient(135deg, rgba(219, 39, 119, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-        'dark-mesh': 'radial-gradient(circle at 20% 80%, rgba(219, 39, 119, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
       },
     },
   },
