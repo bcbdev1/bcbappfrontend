@@ -664,8 +664,10 @@ const Dashboard = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   className={`p-4 lg:p-6 rounded-2xl transition-all duration-300 group cursor-pointer ${
-                    getGlassCardClasses()
-                  } ${getGlassCardHoverClasses()}`}
+                    theme === 'dark'
+                      ? 'bg-surface-dark/50 border border-surface-secondary-dark/30 hover:bg-surface-dark/70 hover:border-secondary-dark/50 shadow-soft-dark hover:shadow-dark-glow'
+                      : 'bg-surface-light border border-gray-200 hover:bg-gray-50 hover:border-blue-200 shadow-soft-light hover:shadow-blue-100/50'
+                  }`}
                   whileHover={{ scale: 1.02, y: -2 }}
                 >
                   <div className="flex items-center justify-between">
@@ -699,7 +701,11 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-4 lg:p-6 rounded-2xl ${
+                  theme === 'dark'
+                    ? 'bg-surface-dark/50 border border-surface-secondary-dark/30 shadow-soft-dark'
+                    : 'bg-surface-light border border-gray-200 shadow-soft-light'
+                }`}
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg lg:text-xl font-semibold">Your Audits</h3>
@@ -999,7 +1005,11 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-4 lg:p-6 rounded-2xl ${
+                  theme === 'dark'
+                    ? 'bg-surface-dark/50 border border-surface-secondary-dark/30 shadow-soft-dark'
+                    : 'bg-surface-light border border-gray-200 shadow-soft-light'
+                }`}
               >
                 <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-2 gap-3">
