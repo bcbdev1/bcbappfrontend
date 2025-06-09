@@ -42,21 +42,6 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
-  // Responsive sidebar handling
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -146,7 +131,7 @@ const Dashboard = () => {
     {
       id: 1,
       title: 'Network Audit Report Updated',
-      description: 'Your network security audit report has been updated with new findings and recommendations',
+      description: 'Your network security audit report has been updated with new findings',
       time: '2 hours ago',
       type: 'info',
       unread: true,
@@ -155,7 +140,7 @@ const Dashboard = () => {
     {
       id: 2,
       title: 'Critical Vulnerability Detected',
-      description: 'High-severity vulnerability found in web application requiring immediate attention and patching',
+      description: 'High-severity vulnerability found in web application requiring immediate attention',
       time: '1 day ago',
       type: 'warning',
       unread: true,
@@ -163,8 +148,8 @@ const Dashboard = () => {
     },
     {
       id: 3,
-      title: 'Cloud Audit Completed Successfully',
-      description: 'Your cloud infrastructure audit has been completed with comprehensive security analysis',
+      title: 'Cloud Audit Completed',
+      description: 'Your cloud infrastructure audit has been completed successfully with no critical issues',
       time: '3 days ago',
       type: 'success',
       unread: false,
@@ -172,8 +157,8 @@ const Dashboard = () => {
     },
     {
       id: 4,
-      title: 'Security Certificate Expiring Soon',
-      description: 'Your SSL certificate will expire in 30 days. Renewal is recommended to maintain security',
+      title: 'Security Certificate Expiring',
+      description: 'Your SSL certificate will expire in 30 days. Renewal recommended',
       time: '5 days ago',
       type: 'warning',
       unread: false,
@@ -264,26 +249,15 @@ const Dashboard = () => {
   };
 
   const handleDownload = (document: any) => {
+    // Simulate document download
     console.log(`Downloading ${document.name}`);
+    // In a real app, this would trigger the actual download
   };
 
   const handlePreview = (document: any) => {
+    // Simulate document preview
     console.log(`Previewing ${document.name}`);
-  };
-
-  // Glassmorphism card classes for dark mode
-  const getGlassCardClasses = () => {
-    if (theme === 'dark') {
-      return 'bg-glass-gradient backdrop-blur-xl border border-white/10 shadow-glass';
-    }
-    return 'bg-surface-light border border-gray-200 shadow-soft-light';
-  };
-
-  const getGlassCardHoverClasses = () => {
-    if (theme === 'dark') {
-      return 'hover:bg-glass-gradient-hover hover:border-white/20 hover:shadow-glass hover:shadow-blue-500/20';
-    }
-    return 'hover:bg-gray-50 hover:border-blue-200 hover:shadow-blue-100/50';
+    // In a real app, this would open a preview modal or new tab
   };
 
   return (
@@ -294,11 +268,10 @@ const Dashboard = () => {
     }`}>
       {/* Dark Mode Background Effects */}
       {theme === 'dark' && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-transparent rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse-slow" />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-dark-mesh opacity-50" />
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-500/5 to-purple-500/5" />
         </div>
       )}
 
@@ -312,13 +285,13 @@ const Dashboard = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className={`fixed left-0 top-0 h-full w-70 z-50 ${
               theme === 'dark' 
-                ? 'bg-glass-gradient backdrop-blur-xl border-r border-white/10 shadow-glass' 
-                : 'bg-surface-light/95 border-r border-gray-200 backdrop-blur-xl'
-            }`}
+                ? 'bg-surface-dark/95 border-r border-surface-secondary-dark/30 shadow-dark-elevated' 
+                : 'bg-surface-light/95 border-r border-gray-200'
+            } backdrop-blur-xl`}
           >
             {/* Logo */}
             <div className={`p-6 border-b ${
-              theme === 'dark' ? 'border-white/10' : 'border-gray-200'
+              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
             }`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -341,7 +314,7 @@ const Dashboard = () => {
                   onClick={() => setSidebarOpen(false)}
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     theme === 'dark' 
-                      ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                      ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                       : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                   }`}
                   whileHover={{ scale: 1.05 }}
@@ -365,10 +338,10 @@ const Dashboard = () => {
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                         isActive
                           ? theme === 'dark'
-                            ? 'bg-glass-gradient-hover border border-white/20 text-secondary-dark shadow-glass-inset'
+                            ? 'bg-gradient-to-r from-secondary-dark/20 to-accent-dark/20 text-secondary-dark border border-secondary-dark/30 shadow-inner-glow'
                             : 'bg-blue-50 text-blue-600 border border-blue-200 shadow-sm'
                           : theme === 'dark'
-                            ? 'hover:bg-white/5 text-text-secondary-dark hover:text-text-dark'
+                            ? 'hover:bg-surface-secondary-dark/30 text-text-secondary-dark hover:text-text-dark'
                             : 'hover:bg-gray-50 text-text-secondary-light hover:text-text-light'
                       }`}
                       whileHover={{ scale: 1.02 }}
@@ -395,11 +368,11 @@ const Dashboard = () => {
 
             {/* User Profile */}
             <div className={`p-4 border-t ${
-              theme === 'dark' ? 'border-white/10' : 'border-gray-200'
+              theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
             }`}>
               <div className={`flex items-center space-x-3 p-3 rounded-xl ${
                 theme === 'dark' 
-                  ? 'bg-glass-gradient border border-white/10 shadow-glass' 
+                  ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-dark-card' 
                   : 'bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-100'
               }`}>
                 <div className={`w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
@@ -433,28 +406,31 @@ const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content - Fixed transition with proper responsive behavior */}
+      {/* Main Content - Fixed the transition issue */}
       <div 
         className={`transition-all duration-300 ease-in-out ${
-          sidebarOpen ? 'lg:ml-70' : 'ml-0'
+          sidebarOpen ? 'ml-70' : 'ml-0'
         }`}
+        style={{
+          marginLeft: sidebarOpen ? '17.5rem' : '0',
+        }}
       >
         {/* Header */}
         <header className={`${
           theme === 'dark' 
-            ? 'bg-glass-gradient backdrop-blur-xl border-b border-white/10 shadow-glass' 
-            : 'bg-surface-light/80 border-b border-gray-200 backdrop-blur-xl'
-        } sticky top-0 z-40`}>
-          <div className="flex items-center justify-between p-4 lg:p-6">
+            ? 'bg-surface-dark/80 border-b border-surface-secondary-dark/30 shadow-dark-card' 
+            : 'bg-surface-light/80 border-b border-gray-200'
+        } backdrop-blur-xl sticky top-0 z-40`}>
+          <div className="flex items-center justify-between p-6">
             <div className="flex items-center space-x-4">
-              {/* Sidebar Toggle Button - Hidden when sidebar is open on desktop */}
+              {/* Sidebar Toggle Button */}
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
-                } ${sidebarOpen ? 'lg:hidden' : ''}`}
+                }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -473,27 +449,27 @@ const Dashboard = () => {
                   }`}>
                     <span className="text-white font-bold text-sm">BC</span>
                   </div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent hidden sm:block">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
                     BCBUZZ
                   </h1>
                 </motion.div>
               )}
               
-              <div className="hidden sm:block">
-                <h1 className="text-xl lg:text-2xl font-bold">Welcome back, Test</h1>
+              <div>
+                <h1 className="text-2xl font-bold">Welcome back, Test</h1>
                 <p className={`text-sm ${
                   theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                 }`}>Here's an overview of your security audits and account</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 lg:space-x-4">
+            <div className="flex items-center space-x-4">
               {/* Theme Toggle */}
               <motion.button
                 onClick={toggleTheme}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                 }`}
                 whileHover={{ scale: 1.05 }}
@@ -506,8 +482,8 @@ const Dashboard = () => {
                 )}
               </motion.button>
 
-              {/* Search - Hidden on mobile */}
-              <div className="relative hidden md:block">
+              {/* Search */}
+              <div className="relative">
                 <Search className={`w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 ${
                   theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                 }`} />
@@ -516,7 +492,7 @@ const Dashboard = () => {
                   placeholder="Search..."
                   className={`pl-10 pr-4 py-2 rounded-lg border transition-all duration-200 ${
                     theme === 'dark'
-                      ? 'bg-white/5 border-white/10 text-text-dark placeholder:text-text-secondary-dark focus:border-secondary-dark backdrop-blur-xl'
+                      ? 'bg-surface-secondary-dark/50 border-surface-secondary-dark text-text-dark placeholder:text-text-secondary-dark focus:border-secondary-dark shadow-dark-card'
                       : 'bg-gray-50 border-gray-200 text-text-light placeholder:text-text-secondary-light focus:border-blue-300'
                   } focus:outline-none focus:ring-2 focus:ring-secondary-dark/20`}
                 />
@@ -526,7 +502,7 @@ const Dashboard = () => {
               <motion.button
                 className={`relative p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark' 
-                    ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                    ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                     : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                 }`}
                 whileHover={{ scale: 1.05 }}
@@ -541,9 +517,9 @@ const Dashboard = () => {
                 <div className="relative">
                   <motion.button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className={`flex items-center space-x-2 lg:space-x-3 p-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
-                        ? 'hover:bg-white/10' 
+                        ? 'hover:bg-surface-secondary-dark/50' 
                         : 'hover:bg-gray-100'
                     }`}
                     whileHover={{ scale: 1.02 }}
@@ -554,13 +530,13 @@ const Dashboard = () => {
                     }`}>
                       <User className="w-4 h-4 text-white" />
                     </div>
-                    <div className="text-left hidden lg:block">
+                    <div className="text-left hidden md:block">
                       <p className="font-medium text-sm">Test User</p>
                       <p className={`text-xs ${
                         theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                       }`}>test@bcbuzz.com</p>
                     </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 hidden lg:block ${
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       userDropdownOpen ? 'rotate-180' : ''
                     }`} />
                   </motion.button>
@@ -575,13 +551,13 @@ const Dashboard = () => {
                         transition={{ duration: 0.2 }}
                         className={`absolute right-0 top-full mt-2 w-64 ${
                           theme === 'dark'
-                            ? 'bg-glass-gradient backdrop-blur-xl border border-white/10 shadow-glass'
-                            : 'bg-surface-light border border-gray-200 backdrop-blur-xl'
-                        } rounded-xl z-50`}
+                            ? 'bg-surface-dark/95 border border-surface-secondary-dark/30 shadow-dark-elevated'
+                            : 'bg-surface-light border border-gray-200'
+                        } rounded-xl backdrop-blur-xl z-50`}
                       >
                         {/* User Info */}
                         <div className={`p-4 border-b ${
-                          theme === 'dark' ? 'border-white/10' : 'border-gray-200'
+                          theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
                         }`}>
                           <div className="flex items-center space-x-3">
                             <div className={`w-12 h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center ${
@@ -605,7 +581,7 @@ const Dashboard = () => {
                         <div className="p-2">
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
-                              ? 'hover:bg-white/10' 
+                              ? 'hover:bg-surface-secondary-dark/50' 
                               : 'hover:bg-gray-50'
                           }`}>
                             <Settings className="w-4 h-4" />
@@ -613,7 +589,7 @@ const Dashboard = () => {
                           </button>
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark' 
-                              ? 'hover:bg-white/10' 
+                              ? 'hover:bg-surface-secondary-dark/50' 
                               : 'hover:bg-gray-50'
                           }`}>
                             <HelpCircle className="w-4 h-4" />
@@ -623,7 +599,7 @@ const Dashboard = () => {
 
                         {/* Logout */}
                         <div className={`p-2 border-t ${
-                          theme === 'dark' ? 'border-white/10' : 'border-gray-200'
+                          theme === 'dark' ? 'border-surface-secondary-dark/30' : 'border-gray-200'
                         }`}>
                           <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left ${
                             theme === 'dark'
@@ -644,17 +620,9 @@ const Dashboard = () => {
         </header>
 
         {/* Dashboard Content */}
-        <main className="p-4 lg:p-6 space-y-6">
-          {/* Mobile Welcome Message */}
-          <div className="block sm:hidden">
-            <h1 className="text-xl font-bold">Welcome back, Test</h1>
-            <p className={`text-sm ${
-              theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
-            }`}>Security overview</p>
-          </div>
-
+        <main className="p-6 space-y-6">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -663,9 +631,11 @@ const Dashboard = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`p-4 lg:p-6 rounded-2xl transition-all duration-300 group cursor-pointer ${
-                    getGlassCardClasses()
-                  } ${getGlassCardHoverClasses()}`}
+                  className={`p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg group cursor-pointer ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
+                      : 'bg-surface-light border-gray-200 hover:border-blue-200 hover:shadow-blue-100/50'
+                  }`}
                   whileHover={{ scale: 1.02, y: -2 }}
                 >
                   <div className="flex items-center justify-between">
@@ -673,7 +643,7 @@ const Dashboard = () => {
                       <p className={`text-sm mb-1 ${
                         theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                       }`}>{stat.label}</p>
-                      <p className="text-xl lg:text-2xl font-bold mb-1">{stat.value}</p>
+                      <p className="text-2xl font-bold mb-1">{stat.value}</p>
                       <div className="flex items-center space-x-2">
                         <span className={`text-xs font-medium px-2 py-1 rounded-full ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
                           {stat.trend}
@@ -681,7 +651,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                     <div className={`p-3 rounded-xl transition-all duration-300 group-hover:scale-110 ${getColorClasses(stat.color, 'bg')} ${getColorClasses(stat.color, 'text')}`}>
-                      <Icon className="w-5 lg:w-6 h-5 lg:h-6" />
+                      <Icon className="w-6 h-6" />
                     </div>
                   </div>
                   <p className={`text-xs mt-3 ${
@@ -692,26 +662,30 @@ const Dashboard = () => {
             })}
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Audits */}
-            <div className="xl:col-span-2">
+            <div className="lg:col-span-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-6 rounded-2xl border ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    : 'bg-surface-light border-gray-200'
+                }`}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg lg:text-xl font-semibold">Your Audits</h3>
+                  <h3 className="text-xl font-semibold">Your Audits</h3>
                   <div className="flex items-center space-x-2">
                     <button className={`p-2 rounded-lg transition-all duration-200 ${
                       theme === 'dark' 
-                        ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                        ? 'hover:bg-surface-secondary-dark/50 text-text-secondary-dark hover:text-text-dark' 
                         : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                     }`}>
                       <Filter className="w-4 h-4" />
                     </button>
-                    <button className="text-secondary-dark hover:underline text-sm font-medium hidden sm:block">View All →</button>
+                    <button className="text-secondary-dark hover:underline text-sm font-medium">View All →</button>
                   </div>
                 </div>
 
@@ -719,10 +693,10 @@ const Dashboard = () => {
                   {recentAudits.map((audit) => (
                     <motion.div
                       key={audit.id}
-                      className={`p-4 rounded-xl transition-all duration-300 cursor-pointer group ${
+                      className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer group ${
                         theme === 'dark'
-                          ? 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20'
-                          : 'border border-gray-200 hover:bg-gray-50 hover:border-blue-200'
+                          ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card'
+                          : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
                       }`}
                       whileHover={{ scale: 1.01 }}
                     >
@@ -738,14 +712,14 @@ const Dashboard = () => {
                              <Shield className="w-4 h-4" />}
                           </div>
                           <div>
-                            <h4 className="font-medium text-sm lg:text-base">{audit.name}</h4>
-                            <p className={`text-xs lg:text-sm ${
+                            <h4 className="font-medium">{audit.name}</h4>
+                            <p className={`text-sm ${
                               theme === 'dark' ? 'text-text-secondary-dark' : 'text-text-secondary-light'
                             }`}>{audit.date}</p>
                           </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                          <span className={`px-2 lg:px-3 py-1 rounded-full text-xs font-medium ${
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             audit.status === 'Completed' ? getColorClasses('success', 'bg') + ' ' + getColorClasses('success', 'text') :
                             audit.status === 'In Progress' ? getColorClasses('info', 'bg') + ' ' + getColorClasses('info', 'text') :
                             getColorClasses('warning', 'bg') + ' ' + getColorClasses('warning', 'text')
@@ -764,7 +738,7 @@ const Dashboard = () => {
                       
                       {audit.progress > 0 && audit.progress < 100 && (
                         <div className={`w-full rounded-full h-2 ${
-                          theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'
+                          theme === 'dark' ? 'bg-surface-secondary-dark' : 'bg-gray-200'
                         }`}>
                           <div
                             className="bg-gradient-to-r from-secondary-dark to-accent-dark h-2 rounded-full transition-all duration-500"
@@ -798,21 +772,25 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-6 rounded-2xl border ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    : 'bg-surface-light border-gray-200'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold">Documents</h3>
-                  <button className="text-secondary-dark hover:underline text-sm font-medium hidden sm:block">View All →</button>
+                  <button className="text-secondary-dark hover:underline text-sm font-medium">View All →</button>
                 </div>
                 
                 <div className="space-y-3">
-                  {documents.slice(0, 3).map((doc) => (
+                  {documents.map((doc) => (
                     <motion.div
                       key={doc.id}
-                      className={`p-3 rounded-lg transition-all duration-200 group ${
+                      className={`p-3 rounded-lg border transition-all duration-200 group ${
                         theme === 'dark'
-                          ? 'bg-white/5 border border-white/10 hover:bg-white/10'
-                          : 'border border-gray-200 hover:bg-gray-50'
+                          ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 shadow-dark-card'
+                          : 'border-gray-200 hover:bg-gray-50'
                       }`}
                       whileHover={{ scale: 1.01 }}
                     >
@@ -850,7 +828,7 @@ const Dashboard = () => {
                             onClick={() => handlePreview(doc)}
                             className={`p-1.5 rounded transition-colors ${
                               theme === 'dark' 
-                                ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                                ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                                 : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                             }`}
                             whileHover={{ scale: 1.1 }}
@@ -863,7 +841,7 @@ const Dashboard = () => {
                             onClick={() => handleDownload(doc)}
                             className={`p-1.5 rounded transition-colors ${
                               theme === 'dark' 
-                                ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                                ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                                 : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                             }`}
                             whileHover={{ scale: 1.1 }}
@@ -872,13 +850,25 @@ const Dashboard = () => {
                           >
                             <Download className="w-3 h-3" />
                           </motion.button>
+                          <motion.button
+                            className={`p-1.5 rounded transition-colors ${
+                              theme === 'dark' 
+                                ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
+                                : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            title="More options"
+                          >
+                            <MoreVertical className="w-3 h-3" />
+                          </motion.button>
                         </div>
                       </div>
                       
                       {doc.status === 'processing' && (
                         <div className="mt-2">
                           <div className={`w-full rounded-full h-1 ${
-                            theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'
+                            theme === 'dark' ? 'bg-surface-secondary-dark' : 'bg-gray-200'
                           }`}>
                             <div className="bg-gradient-to-r from-secondary-dark to-accent-dark h-1 rounded-full w-3/4 animate-pulse"></div>
                           </div>
@@ -895,7 +885,11 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-6 rounded-2xl border ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    : 'bg-surface-light border-gray-200'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
@@ -907,22 +901,22 @@ const Dashboard = () => {
                       </span>
                     </div>
                   </div>
-                  <button className="text-secondary-dark hover:underline text-sm font-medium hidden sm:block">See All →</button>
+                  <button className="text-secondary-dark hover:underline text-sm font-medium">See All →</button>
                 </div>
                 
                 <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {notifications.slice(0, 3).map((notification) => {
+                  {notifications.map((notification) => {
                     const Icon = notification.icon;
                     return (
                       <motion.div 
                         key={notification.id} 
-                        className={`relative p-3 lg:p-4 rounded-xl transition-all duration-200 cursor-pointer group ${
+                        className={`relative p-4 rounded-xl transition-all duration-200 cursor-pointer group ${
                           notification.unread 
                             ? theme === 'dark' 
-                              ? 'bg-glass-gradient-hover border border-white/20' 
+                              ? 'bg-gradient-to-r from-secondary-dark/10 to-accent-dark/10 border border-secondary-dark/20 shadow-inner-glow' 
                               : 'bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200'
                             : theme === 'dark'
-                              ? 'hover:bg-white/5'
+                              ? 'hover:bg-surface-secondary-dark/30'
                               : 'hover:bg-gray-50'
                         }`}
                         whileHover={{ scale: 1.01, x: 2 }}
@@ -969,7 +963,7 @@ const Dashboard = () => {
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           <button className={`p-1 rounded transition-colors ${
                             theme === 'dark' 
-                              ? 'hover:bg-white/10 text-text-secondary-dark hover:text-text-dark' 
+                              ? 'hover:bg-surface-secondary-dark text-text-secondary-dark hover:text-text-dark' 
                               : 'hover:bg-gray-100 text-text-secondary-light hover:text-text-light'
                           }`}>
                             <X className="w-3 h-3" />
@@ -999,7 +993,11 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className={`p-4 lg:p-6 rounded-2xl ${getGlassCardClasses()}`}
+                className={`p-6 rounded-2xl border ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-surface-dark/80 to-surface-secondary-dark/50 border-surface-secondary-dark/30 shadow-dark-card'
+                    : 'bg-surface-light border-gray-200'
+                }`}
               >
                 <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-2 gap-3">
@@ -1008,16 +1006,16 @@ const Dashboard = () => {
                     return (
                       <motion.button
                         key={action.label}
-                        className={`p-3 lg:p-4 rounded-xl transition-all duration-300 flex flex-col items-center space-y-2 group ${
+                        className={`p-4 rounded-xl border transition-all duration-300 flex flex-col items-center space-y-2 group ${
                           theme === 'dark'
-                            ? 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20'
-                            : 'border border-gray-200 hover:bg-gray-50 hover:border-blue-200'
+                            ? 'border-surface-secondary-dark/30 hover:bg-surface-secondary-dark/30 hover:border-secondary-dark/50 shadow-dark-card hover:shadow-dark-elevated'
+                            : 'border-gray-200 hover:bg-gray-50 hover:border-blue-200'
                         }`}
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <div className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-110 ${getColorClasses(action.color, 'bg')} ${getColorClasses(action.color, 'text')}`}>
-                          <Icon className="w-4 lg:w-5 h-4 lg:h-5" />
+                          <Icon className="w-5 h-5" />
                         </div>
                         <div className="text-center">
                           <span className="text-xs font-medium block">{action.label}</span>
