@@ -33,7 +33,6 @@ const Dashboard = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const sidebarItems = [
-    { id: 'home', label: 'Home', icon: Home },
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'scan', label: 'Scan', icon: Scan },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -44,7 +43,6 @@ const Dashboard = () => {
     { label: 'Active Audits', value: '2', icon: Shield, color: 'blue' },
     { label: 'Completed Audits', value: '1', icon: CheckCircle, color: 'green' },
     { label: 'Security Score', value: '82/100', icon: TrendingUp, color: 'yellow' },
-    { label: 'Vulnerabilities', value: '3', icon: AlertTriangle, color: 'red' },
   ];
 
   const recentAudits = [
@@ -465,7 +463,7 @@ const Dashboard = () => {
             {/* Right Sidebar */}
             <div className="space-y-6">
               {/* Account Overview */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
@@ -498,7 +496,7 @@ const Dashboard = () => {
                 <button className="w-full mt-4 px-4 py-2 bg-secondary-dark text-white rounded-lg hover:bg-secondary-dark/90 transition-colors">
                   Manage Account
                 </button>
-              </motion.div>
+              </motion.div> */}
 
               {/* Notifications */}
               <motion.div
