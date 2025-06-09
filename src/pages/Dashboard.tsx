@@ -21,7 +21,8 @@ import {
   CheckCircle,
   Clock,
   Menu,
-  X
+  X,
+  ChevronDown
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const { theme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const sidebarItems = [
     { id: 'home', label: 'Home', icon: Home },
@@ -118,16 +120,27 @@ const Dashboard = () => {
           >
             {/* Logo */}
             <div className="p-6 border-b border-secondary-dark/20 dark:border-gray-200/20">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">BC</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-xl flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">BC</span>
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
+                      BCBUZZ
+                    </h1>
+                    <p className="text-xs opacity-60">Security Platform</p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
-                    BCBUZZ
-                  </h1>
-                  <p className="text-xs opacity-60">Security Platform</p>
-                </div>
+                {/* Close Sidebar Button */}
+                <motion.button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <X className="w-5 h-5" />
+                </motion.button>
               </div>
             </div>
 
@@ -200,14 +213,32 @@ const Dashboard = () => {
         } backdrop-blur-xl sticky top-0 z-40`}>
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center space-x-4">
+              {/* Sidebar Toggle Button */}
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                <Menu className="w-5 h-5" />
               </motion.button>
+              
+              {/* Logo when sidebar is closed */}
+              {!sidebarOpen && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center space-x-3"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">BC</span>
+                  </div>
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-secondary-dark to-accent-dark bg-clip-text text-transparent">
+                    BCBUZZ
+                  </h1>
+                </motion.div>
+              )}
+              
               <div>
                 <h1 className="text-2xl font-bold">Welcome back, Test</h1>
                 <p className="text-sm opacity-60">Here's an overview of your security audits and account</p>
@@ -238,6 +269,82 @@ const Dashboard = () => {
                 <Bell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </motion.button>
+
+              {/* User Profile Dropdown (when sidebar is closed) */}
+              {!sidebarOpen && (
+                <div className="relative">
+                  <motion.button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="text-left hidden md:block">
+                      <p className="font-medium text-sm">Test User</p>
+                      <p className="text-xs opacity-60">test@bcbuzz.com</p>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                  </motion.button>
+
+                  {/* User Dropdown Menu */}
+                  <AnimatePresence>
+                    {userDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className={`absolute right-0 top-full mt-2 w-64 ${
+                          theme === 'dark'
+                            ? 'bg-surface-dark border border-secondary-dark/20'
+                            : 'bg-white border border-gray-200'
+                        } rounded-xl shadow-xl z-50`}
+                      >
+                        {/* User Info */}
+                        <div className="p-4 border-b border-secondary-dark/20 dark:border-gray-200/20">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-secondary-dark to-accent-dark rounded-full flex items-center justify-center">
+                              <User className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Test User</p>
+                              <p className="text-sm opacity-60">test@bcbuzz.com</p>
+                              <p className="text-xs opacity-50">BCBUZZ Technologies</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Menu Items */}
+                        <div className="p-2">
+                          <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left">
+                            <Settings className="w-4 h-4" />
+                            <span className="text-sm">Account Settings</span>
+                          </button>
+                          <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left">
+                            <HelpCircle className="w-4 h-4" />
+                            <span className="text-sm">Help & Support</span>
+                          </button>
+                        </div>
+
+                        {/* Logout */}
+                        <div className="p-2 border-t border-secondary-dark/20 dark:border-gray-200/20">
+                          <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-left ${
+                            theme === 'dark'
+                              ? 'hover:bg-red-500/20 text-red-400'
+                              : 'hover:bg-red-50 text-red-600'
+                          }`}>
+                            <LogOut className="w-4 h-4" />
+                            <span className="text-sm">Logout</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -484,6 +591,14 @@ const Dashboard = () => {
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Click outside to close user dropdown */}
+      {userDropdownOpen && (
+        <div
+          className="fixed inset-0 z-30"
+          onClick={() => setUserDropdownOpen(false)}
         />
       )}
     </div>
