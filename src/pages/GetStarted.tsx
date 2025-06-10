@@ -484,26 +484,25 @@ const GetStarted = () => {
                     </div>
                   </div>
 
-                   <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                  <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={formData.auditServices.includes('cloud')}
-                          onChange={() => handleServiceChange('cloud')}
+                          checked={formData.auditServices.includes('mobile')}
+                          onChange={() => handleServiceChange('mobile')}
                           className="h-5 w-5 text-accent-dark dark:text-accent-light rounded border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark dark:focus:ring-accent-light bg-surface-light/10 dark:bg-surface-dark/10 mt-1"
                         />
                         <div className="ml-3">
                           <div className="flex items-center">
-                            <Cloud className="h-5 w-5 text-blue-500 dark:text-blue-400 mr-2" />
-                            <span className="font-medium">Cloud Audit</span>
+                            <Smartphone className="h-5 w-5 text-yellow-500 dark:text-yellow-400 mr-2" />
+                            <span className="font-medium">Mobile Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
-                            Security assessment of your cloud infrastructure and configurations.
+                            Security assessment of your mobile applications.
                           </p>
                         </div>
                       </label>
                     </div>
-                  
                   <div>
                     <label htmlFor="additionalDetails" className="block text-sm font-medium mb-1 text-surface-dark/80 dark:text-surface-light/80">
                       Additional Details
