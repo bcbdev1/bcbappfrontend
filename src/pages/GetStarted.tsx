@@ -18,6 +18,17 @@ interface FormData {
   additionalDetails: string;
 }
 
+interface ValidationErrors {
+  companyName?: string;
+  contactName?: string;
+  jobRole?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  companySize?: string;
+  industry?: string;
+  auditServices?: string;
+}
+
 const GetStarted = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -25,6 +36,8 @@ const GetStarted = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [consentChecked, setConsentChecked] = useState(false);
   
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
@@ -42,58 +55,175 @@ const GetStarted = () => {
     document.title = 'Get Started | BCBUZZ';
   }, []);
 
+  // Validation functions
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    const phoneRegex = /^[0-9]{7,15}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateStep1 = (): boolean => {
+    const errors: ValidationErrors = {};
+    let isValid = true;
+
+    if (!formData.companyName.trim()) {
+      errors.companyName = 'Company name is required';
+      isValid = false;
+    }
+
+    if (!formData.contactName.trim()) {
+      errors.contactName = 'Contact name is required';
+      isValid = false;
+    }
+
+    if (!formData.jobRole.trim()) {
+      errors.jobRole = 'Job role is required';
+      isValid = false;
+    }
+
+    if (!formData.contactEmail.trim()) {
+      errors.contactEmail = 'Email is required';
+      isValid = false;
+    } else if (!validateEmail(formData.contactEmail)) {
+      errors.contactEmail = 'Please enter a valid email address';
+      isValid = false;
+    }
+
+    if (!formData.contactPhone.trim()) {
+      errors.contactPhone = 'Phone number is required';
+      isValid = false;
+    } else if (!validatePhone(formData.contactPhone)) {
+      errors.contactPhone = 'Please enter a valid phone number (7-15 digits)';
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
+  };
+
+  const validateStep2 = (): boolean => {
+    const errors: ValidationErrors = {};
+    let isValid = true;
+
+    if (!formData.companySize) {
+      errors.companySize = 'Company size is required';
+      isValid = false;
+    }
+
+    if (!formData.industry) {
+      errors.industry = 'Industry is required';
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
+  };
+
+  const validateStep3 = (): boolean => {
+    const errors: ValidationErrors = {};
+    let isValid = true;
+
+    if (formData.auditServices.length === 0) {
+      errors.auditServices = 'Please select at least one audit service';
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
+  };
+
+  const validateStep4 = (): boolean => {
+    return consentChecked && validateStep1() && validateStep2() && validateStep3();
+  };
+
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return validateStep1();
+      case 2:
+        return validateStep2();
+      case 3:
+        return validateStep3();
+      case 4:
+        return validateStep4();
+      default:
+        return false;
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    
+    // Clear validation error for this field
+    if (validationErrors[name as keyof ValidationErrors]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
+    setError('');
   };
 
   const nextStep = () => {
-    if (currentStep < 4) {
+    if (isStepValid(currentStep) && currentStep < 4) {
       setCurrentStep(prev => prev + 1);
+      setValidationErrors({});
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
+      setValidationErrors({});
     }
   };
 
   const handleServiceChange = (service: string) => {
     setFormData(prev => {
       const isSelected = prev.auditServices.includes(service);
+      const newServices = isSelected 
+        ? prev.auditServices.filter(s => s !== service)
+        : [...prev.auditServices, service];
+      
       return {
         ...prev,
-        auditServices: isSelected 
-          ? prev.auditServices.filter(s => s !== service)
-          : [...prev.auditServices, service]
+        auditServices: newServices
       };
     });
+    
+    // Clear validation error for audit services
+    if (validationErrors.auditServices) {
+      setValidationErrors(prev => ({
+        ...prev,
+        auditServices: undefined
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (
-      !formData.companyName ||
-      !formData.contactName ||
-      !formData.jobRole ||
-      !formData.contactEmail ||
-      !formData.companySize ||
-      !formData.industry ||
-      formData.auditServices.length === 0
-    ) {
-      setError('Please fill in all required fields.');
+    if (!validateStep4()) {
+      setError('Please ensure all required fields are filled correctly and consent is given.');
       return;
     }
 
     setIsSubmitting(true);
     try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setIsSuccess(true);
+    } catch (err) {
+      setError('Failed to submit request. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -190,9 +320,15 @@ const GetStarted = () => {
               <CheckCircle className="h-16 w-16 text-green-500 dark:text-green-400 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2 text-surface-dark dark:text-surface-light">Request Submitted Successfully!</h2>
               <p className="text-surface-dark/70 dark:text-surface-light/70 mb-4">
-                Your request has been successfully received our team has been notified.
+                Your request has been successfully received and our team has been notified.
                 We'll contact you shortly to discuss the next steps.
               </p>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-2 bg-accent-dark dark:bg-accent-light text-white rounded-md hover:bg-accent-dark/90 dark:hover:bg-accent-light/90 transition-colors"
+              >
+                Go to Dashboard
+              </button>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit}>
@@ -217,9 +353,15 @@ const GetStarted = () => {
                       name="companyName"
                       value={formData.companyName}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.companyName 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     />
+                    {validationErrors.companyName && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.companyName}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -232,9 +374,15 @@ const GetStarted = () => {
                       name="contactName"
                       value={formData.contactName}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.contactName 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     />
+                    {validationErrors.contactName && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.contactName}</p>
+                    )}
                   </div>
 
                   <div>
@@ -247,9 +395,15 @@ const GetStarted = () => {
                       name="jobRole"
                       value={formData.jobRole}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.jobRole 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     />
+                    {validationErrors.jobRole && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.jobRole}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -261,26 +415,21 @@ const GetStarted = () => {
                       id="contactEmail"
                       name="contactEmail"
                       value={formData.contactEmail}
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                      onBlur={(e) => {
-                        const email = e.target.value;
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (email && !emailRegex.test(email)) {
-                          setError('Please enter a valid email address.');
-                        } else {
-                          setError('');
-                        }
-                      }}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      onChange={handleChange}
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.contactEmail 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     />
+                    {validationErrors.contactEmail && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.contactEmail}</p>
+                    )}
                   </div>
                   
                   <div>
                     <label htmlFor="contactPhone" className="block text-sm font-medium mb-1 text-surface-dark/80 dark:text-surface-light/80">
-                      Contact Phone
+                      Contact Phone <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -300,9 +449,15 @@ const GetStarted = () => {
                       }}
                       inputMode="numeric"
                       pattern="[0-9]{7,15}"
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.contactPhone 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     />
+                    {validationErrors.contactPhone && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.contactPhone}</p>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -327,8 +482,11 @@ const GetStarted = () => {
                       name="companySize"
                       value={formData.companySize}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.companySize 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     >
                       <option value="">Select company size</option>
                       <option value="1-10">1-10 employees</option>
@@ -338,6 +496,9 @@ const GetStarted = () => {
                       <option value="501-1000">501-1000 employees</option>
                       <option value="1000+">1000+ employees</option>
                     </select>
+                    {validationErrors.companySize && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.companySize}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -349,8 +510,11 @@ const GetStarted = () => {
                       name="industry"
                       value={formData.industry}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border border-surface-light/20 dark:border-surface-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50 text-surface-dark dark:text-surface-light"
+                      className={`w-full px-4 py-2 bg-surface-light/10 dark:bg-surface-dark/10 border rounded-md focus:outline-none focus:ring-2 text-surface-dark dark:text-surface-light ${
+                        validationErrors.industry 
+                          ? 'border-red-500 focus:ring-red-500/50' 
+                          : 'border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark/50 dark:focus:ring-accent-light/50'
+                      }`}
                     >
                       <option value="">Select industry</option>
                       <option value="Technology">Technology</option>
@@ -364,6 +528,9 @@ const GetStarted = () => {
                       <option value="Transportation">Transportation</option>
                       <option value="Other">Other</option>
                     </select>
+                    {validationErrors.industry && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.industry}</p>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -379,11 +546,20 @@ const GetStarted = () => {
                 >
                   <h2 className="text-xl font-medium mb-4 text-surface-dark dark:text-surface-light">Select Audit Services</h2>
                   <p className="text-surface-dark/70 dark:text-surface-light/70 mb-6">
-                    Choose the security audit services you're interested in. You can select multiple options.
+                    Choose the security audit services you're interested in. You can select multiple options. <span className="text-red-500">*</span>
                   </p>
                   
+                  {validationErrors.auditServices && (
+                    <div className="bg-red-500/10 text-red-500 dark:text-red-400 p-3 rounded-lg mb-4 flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-2 shrink-0" />
+                      <span>{validationErrors.auditServices}</span>
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('network') ? 'border-accent-dark dark:border-accent-light bg-accent-dark/5 dark:bg-accent-light/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
@@ -403,7 +579,9 @@ const GetStarted = () => {
                       </label>
                     </div>
                     
-                    <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('web') ? 'border-green-500 bg-green-500/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
@@ -423,7 +601,9 @@ const GetStarted = () => {
                       </label>
                     </div>
                     
-                    <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('cloud') ? 'border-blue-500 bg-blue-500/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
@@ -443,7 +623,9 @@ const GetStarted = () => {
                       </label>
                     </div>
                     
-                    <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('mobile') ? 'border-yellow-500 bg-yellow-500/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
@@ -463,7 +645,9 @@ const GetStarted = () => {
                       </label>
                     </div>
                     
-                    <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('iot') ? 'border-red-500 bg-red-500/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
@@ -482,27 +666,29 @@ const GetStarted = () => {
                         </div>
                       </label>
                     </div>
-                  </div>
 
-                  <div className="glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer">
+                    <div className={`glass-card hover:border-accent-dark dark:hover:border-accent-light transition-colors cursor-pointer ${
+                      formData.auditServices.includes('api') ? 'border-violet-500 bg-violet-500/5' : ''
+                    }`}>
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={formData.auditServices.includes('mobile')}
-                          onChange={() => handleServiceChange('mobile')}
+                          checked={formData.auditServices.includes('api')}
+                          onChange={() => handleServiceChange('api')}
                           className="h-5 w-5 text-accent-dark dark:text-accent-light rounded border-surface-light/20 dark:border-surface-dark/20 focus:ring-accent-dark dark:focus:ring-accent-light bg-surface-light/10 dark:bg-surface-dark/10 mt-1"
                         />
                         <div className="ml-3">
                           <div className="flex items-center">
-                            <Server className="h-5 w-5 text-yellow-500 dark:text-violet-400 mr-2" />
+                            <Server className="h-5 w-5 text-violet-500 dark:text-violet-400 mr-2" />
                             <span className="font-medium">API Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
-                            Security assessment of your applications programming.
+                            Security assessment of your application programming interfaces.
                           </p>
                         </div>
                       </label>
                     </div>
+                  </div>
                   
                   <div>
                     <label htmlFor="additionalDetails" className="block text-sm font-medium mb-1 text-surface-dark/80 dark:text-surface-light/80">
@@ -599,6 +785,11 @@ const GetStarted = () => {
                             color = 'bg-red-500/10 text-red-500 dark:bg-red-400/10 dark:text-red-400';
                             label = 'IoT Audit';
                             break;
+                          case 'api':
+                            icon = <Server className="h-4 w-4" />;
+                            color = 'bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400';
+                            label = 'API Audit';
+                            break;
                           default:
                             icon = <Shield className="h-4 w-4" />;
                             color = 'bg-accent-dark/10 text-accent-dark dark:bg-accent-light/10 dark:text-accent-light';
@@ -635,12 +826,13 @@ const GetStarted = () => {
                       <input
                         type="checkbox"
                         id="consent"
-                        required
+                        checked={consentChecked}
+                        onChange={(e) => setConsentChecked(e.target.checked)}
                         className="h-4 w-4 text-accent-dark dark:text-accent-light border-surface-light/20 dark:border-surface-dark/20 rounded focus:ring-accent-dark dark:focus:ring-accent-light bg-surface-light/10 dark:bg-surface-dark/10"
                       />
                       <label htmlFor="consent" className="ml-2 text-sm text-surface-dark/80 dark:text-surface-light/80">
                         I agree to the processing of my data as described in the{' '}
-                        <a href="#" className="text-accent-dark dark:text-accent-light hover:opacity-80">Privacy Policy</a>
+                        <a href="#" className="text-accent-dark dark:text-accent-light hover:opacity-80">Privacy Policy</a> <span className="text-red-500">*</span>
                       </label>
                     </div>
                   </div>
@@ -663,16 +855,23 @@ const GetStarted = () => {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="px-6 py-2 rounded-md bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90 transition-colors ml-auto"
+                    disabled={!isStepValid(currentStep)}
+                    className={`px-6 py-2 rounded-md transition-colors ml-auto ${
+                      isStepValid(currentStep)
+                        ? 'bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90'
+                        : 'bg-surface-light/20 dark:bg-surface-dark/20 text-surface-dark/50 dark:text-surface-light/50 cursor-not-allowed'
+                    }`}
                   >
                     Next
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className={`px-6 py-2 rounded-md bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90 transition-colors ml-auto flex items-center ${
-                      isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                    disabled={isSubmitting || !isStepValid(currentStep)}
+                    className={`px-6 py-2 rounded-md transition-colors ml-auto flex items-center ${
+                      isStepValid(currentStep) && !isSubmitting
+                        ? 'bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90'
+                        : 'bg-surface-light/20 dark:bg-surface-dark/20 text-surface-dark/50 dark:text-surface-light/50 cursor-not-allowed'
                     }`}
                   >
                     {isSubmitting ? (
