@@ -891,7 +891,7 @@ const GetStarted = () => {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin h-5 w-5 text-white mr-2\" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-5 w-5 text-white mr-2\" viewBox=\"0 0 24 24">
                           <circle
                             className="opacity-25"
                             cx="12"
