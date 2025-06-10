@@ -27,6 +27,7 @@ interface ValidationErrors {
   companySize?: string;
   industry?: string;
   auditServices?: string;
+  consent?: string;
 }
 
 const GetStarted = () => {
@@ -66,93 +67,95 @@ const GetStarted = () => {
     return phoneRegex.test(phone);
   };
 
-  const validateStep1 = (): boolean => {
+  const getValidationErrorsStep1 = (): ValidationErrors => {
     const errors: ValidationErrors = {};
-    let isValid = true;
 
     if (!formData.companyName.trim()) {
       errors.companyName = 'Company name is required';
-      isValid = false;
     }
 
     if (!formData.contactName.trim()) {
       errors.contactName = 'Contact name is required';
-      isValid = false;
     }
 
     if (!formData.jobRole.trim()) {
       errors.jobRole = 'Job role is required';
-      isValid = false;
     }
 
     if (!formData.contactEmail.trim()) {
       errors.contactEmail = 'Email is required';
-      isValid = false;
     } else if (!validateEmail(formData.contactEmail)) {
       errors.contactEmail = 'Please enter a valid email address';
-      isValid = false;
     }
 
     if (!formData.contactPhone.trim()) {
       errors.contactPhone = 'Phone number is required';
-      isValid = false;
     } else if (!validatePhone(formData.contactPhone)) {
       errors.contactPhone = 'Please enter a valid phone number (7-15 digits)';
-      isValid = false;
     }
 
-    setValidationErrors(errors);
-    return isValid;
+    return errors;
   };
 
-  const validateStep2 = (): boolean => {
+  const getValidationErrorsStep2 = (): ValidationErrors => {
     const errors: ValidationErrors = {};
-    let isValid = true;
 
     if (!formData.companySize) {
       errors.companySize = 'Company size is required';
-      isValid = false;
     }
 
     if (!formData.industry) {
       errors.industry = 'Industry is required';
-      isValid = false;
     }
 
-    setValidationErrors(errors);
-    return isValid;
+    return errors;
   };
 
-  const validateStep3 = (): boolean => {
+  const getValidationErrorsStep3 = (): ValidationErrors => {
     const errors: ValidationErrors = {};
-    let isValid = true;
 
     if (formData.auditServices.length === 0) {
       errors.auditServices = 'Please select at least one audit service';
-      isValid = false;
     }
 
-    setValidationErrors(errors);
-    return isValid;
+    return errors;
   };
 
-  const validateStep4 = (): boolean => {
-    return consentChecked && validateStep1() && validateStep2() && validateStep3();
+  const getValidationErrorsStep4 = (): ValidationErrors => {
+    const errors: ValidationErrors = {
+      ...getValidationErrorsStep1(),
+      ...getValidationErrorsStep2(),
+      ...getValidationErrorsStep3()
+    };
+
+    if (!consentChecked) {
+      errors.consent = 'Please agree to the privacy policy';
+    }
+
+    return errors;
   };
 
-  const isStepValid = (step: number): boolean => {
+  const checkCurrentStepValidity = (step: number): boolean => {
+    let errors: ValidationErrors = {};
+    
     switch (step) {
       case 1:
-        return validateStep1();
+        errors = getValidationErrorsStep1();
+        break;
       case 2:
-        return validateStep2();
+        errors = getValidationErrorsStep2();
+        break;
       case 3:
-        return validateStep3();
+        errors = getValidationErrorsStep3();
+        break;
       case 4:
-        return validateStep4();
+        errors = getValidationErrorsStep4();
+        break;
       default:
         return false;
     }
+
+    return Object.keys(errors).length === 0;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -173,9 +176,15 @@ const GetStarted = () => {
   };
 
   const nextStep = () => {
-    if (isStepValid(currentStep) && currentStep < 4) {
+    const errors = currentStep === 1 ? getValidationErrorsStep1() :
+                   currentStep === 2 ? getValidationErrorsStep2() :
+                   currentStep === 3 ? getValidationErrorsStep3() : {};
+    
+    if (Object.keys(errors).length === 0 && currentStep < 4) {
       setCurrentStep(prev => prev + 1);
       setValidationErrors({});
+    } else {
+      setValidationErrors(errors);
     }
   };
 
@@ -212,7 +221,10 @@ const GetStarted = () => {
     e.preventDefault();
     setError('');
 
-    if (!validateStep4()) {
+    const errors = getValidationErrorsStep4();
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
       setError('Please ensure all required fields are filled correctly and consent is given.');
       return;
     }
@@ -835,6 +847,9 @@ const GetStarted = () => {
                         <a href="#" className="text-accent-dark dark:text-accent-light hover:opacity-80">Privacy Policy</a> <span className="text-red-500">*</span>
                       </label>
                     </div>
+                    {validationErrors.consent && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.consent}</p>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -855,9 +870,9 @@ const GetStarted = () => {
                   <button
                     type="button"
                     onClick={nextStep}
-                    disabled={!isStepValid(currentStep)}
+                    disabled={!checkCurrentStepValidity(currentStep)}
                     className={`px-6 py-2 rounded-md transition-colors ml-auto ${
-                      isStepValid(currentStep)
+                      checkCurrentStepValidity(currentStep)
                         ? 'bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90'
                         : 'bg-surface-light/20 dark:bg-surface-dark/20 text-surface-dark/50 dark:text-surface-light/50 cursor-not-allowed'
                     }`}
@@ -867,9 +882,9 @@ const GetStarted = () => {
                 ) : (
                   <button
                     type="submit"
-                    disabled={isSubmitting || !isStepValid(currentStep)}
+                    disabled={isSubmitting || !checkCurrentStepValidity(currentStep)}
                     className={`px-6 py-2 rounded-md transition-colors ml-auto flex items-center ${
-                      isStepValid(currentStep) && !isSubmitting
+                      checkCurrentStepValidity(currentStep) && !isSubmitting
                         ? 'bg-accent-dark dark:bg-accent-light text-white hover:bg-accent-dark/90 dark:hover:bg-accent-light/90'
                         : 'bg-surface-light/20 dark:bg-surface-dark/20 text-surface-dark/50 dark:text-surface-light/50 cursor-not-allowed'
                     }`}
