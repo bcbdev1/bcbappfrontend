@@ -134,7 +134,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               {error}
             </motion.p>
           )}
-        </div>
+        </motion.div>
       </div>
 
       {/* Modal Popup */}
