@@ -8,7 +8,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import GetStarted from './pages/GetStarted';
 import Dashboard from './pages/Dashboard';
 import { useTheme } from './context/ThemeContext';
-import CursorEffect from './components/effects/CursorEffect';
+import CursorEffect from './component/effects/CursorEffect';
 
 function App() {
   const location = useLocation();
