@@ -908,8 +908,6 @@ const GetStarted = () => {
     </svg>
   </>
 ) : (
-  <span>Submit</span>  // 👉 Replace this with your actual fallback content
-)}
 
                       <>
                         Submit Request
