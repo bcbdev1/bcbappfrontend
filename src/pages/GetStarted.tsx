@@ -889,7 +889,7 @@ const GetStarted = () => {
                         : 'bg-surface-light/20 dark:bg-surface-dark/20 text-surface-dark/50 dark:text-surface-light/50 cursor-not-allowed'
                     }`}
                   >
-                   {isSubmitting ? (
+                  {isSubmitting ? (
   <>
     <svg className="animate-spin h-5 w-5 text-white mr-2" viewBox="0 0 24 24">
       <circle
@@ -907,7 +907,9 @@ const GetStarted = () => {
       />
     </svg>
   </>
-) : ( ... ) }
+) : (
+  <span>Submit</span>  // 👉 Replace this with your actual fallback content
+)}
 
                       <>
                         Submit Request
