@@ -498,7 +498,7 @@ const GetStarted = () => {
                             <span className="font-medium">API Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
-                            Security assessment of your mobile applications.
+                            Security assessment of your applications programming.
                           </p>
                         </div>
                       </label>
