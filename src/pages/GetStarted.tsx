@@ -581,7 +581,7 @@ const GetStarted = () => {
                         />
                         <div className="ml-3">
                           <div className="flex items-center">
-                            <Server className="h-5 w-5 text-accent-dark dark:text-accent-light mr-2" />
+                            <Shield className="h-5 w-5 text-accent-dark dark:text-accent-light mr-2" />
                             <span className="font-medium">Network Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
@@ -691,7 +691,7 @@ const GetStarted = () => {
                         />
                         <div className="ml-3">
                           <div className="flex items-center">
-                            <Shield className="h-5 w-5 text-violet-500 dark:text-violet-400 mr-2" />
+                            <Server className="h-5 w-5 text-violet-500 dark:text-violet-400 mr-2" />
                             <span className="font-medium">API Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
