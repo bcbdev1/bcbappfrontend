@@ -494,7 +494,7 @@ const GetStarted = () => {
                         />
                         <div className="ml-3">
                           <div className="flex items-center">
-                            <Server className="h-5 w-5 text-blue-500 dark:text-yellow-400 mr-2" />
+                            <Server className="h-5 w-5 text-yellow-500 dark:text-blue-400 mr-2" />
                             <span className="font-medium">API Audit</span>
                           </div>
                           <p className="text-sm text-surface-dark/70 dark:text-surface-light/70 mt-1">
